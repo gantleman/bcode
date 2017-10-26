@@ -73,7 +73,27 @@ void b_parsed(const char* buf, int len, int &cur, b_element& out)
 			
 			cur += nlen - 1;
 			slen.clear();
-		}else
+		}
+		else if (slen.empty() && buf[cur] == 'i' && 1 == kv)
+		{
+			int begin = cur + 1, nlen = 0;
+			while (true)
+			{
+				if (buf[begin + ++nlen] == 'e')
+				{
+					(*p)[key].type = 3;
+					///复制数据到缓冲区
+					(*p)[key].buf.resize(nlen);
+					memcpy(&(*p)[key].buf[0], (buf + begin), nlen);
+					kv = 0;
+					key.clear();
+					break;
+				}
+			}
+
+			cur = begin + nlen;
+		}
+		else
 			slen += buf[cur];
 	}
 }
@@ -125,7 +145,28 @@ void b_parsel(const char* buf, int len, int &cur, b_element& out)
 			cur += nlen - 1;
 			slen.clear();
 		}
-		else
+		else if (slen.empty() && buf[cur] == 'i')
+		{
+			int begin = cur + 1, nlen = 0;
+			while (true)
+			{
+				if (buf[begin + ++nlen] == 'e')
+				{
+					///插入空值
+					b_element t;
+					(*p).push_back(t);
+
+					(*p).back().type = 3;
+					(*p).back().buf.resize(nlen);
+					memcpy(&(*p).back().buf[0], (buf + begin), nlen);
+
+					cur += nlen - 1;
+					slen.clear();
+					break;
+				}
+			}
+			cur = begin + nlen;
+		}else
 			slen += buf[cur];
 	}
 }
@@ -266,6 +307,17 @@ void b_packagem(b_element* e, std::string& o)
 				o.append(ss.str());
 				b_packagel(&iter->second, o);
 			}
+			else if (3 == iter->second.type)
+			{
+				std::stringstream ss;
+				ss << iter->first.size();
+				ss << ":";
+				ss << iter->first;
+				o.append(ss.str());
+				o.append("i");
+				o.append(&iter->second.buf[0], iter->second.buf.size());
+				o.append("e");
+			}
 			else
 			{
 				std::stringstream ss;
@@ -295,9 +347,14 @@ void b_packagel(b_element* e, std::string& o)
 			if (1 == iter->type)
 			{
 				b_packagem(&(*iter), o);
-			} else if (2 == iter->type)
+			}else if (2 == iter->type)
 			{
 				b_packagel(&(*iter), o);
+			}else if (3 == iter->type)
+			{
+				o.append("i");
+				o.append(&iter->buf[0], iter->buf.size());
+				o.append("e");
 			}
 			else
 			{

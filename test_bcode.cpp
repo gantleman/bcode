@@ -5,7 +5,7 @@
 #include <string>
 #include "bcode.h"
 
-char* bstr = "d1:rd2:id20:mnopqrstuvwxyz123456e1:t2:aa1:y1:r1:fl5:hello5:worldee";
+char* bstr = "d1:rd1:ti997e2:id20:mnopqrstuvwxyz123456e1:t2:aa1:y1:r1:fli996e5:hello5:worldee";
 
 int _tmain(int argc, _TCHAR* argv[])
 {
