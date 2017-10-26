@@ -17,7 +17,7 @@ b_element::~b_element()
 
 void b_parsel(const char* buf, int len, int &cur, b_element& out);
 
-void b_parsem(const char* buf, int len, int &cur, b_element& out)
+void b_parsed(const char* buf, int len, int &cur, b_element& out)
 {
 	out.type = 1;
 	std::map<std::string, b_element>* p = new std::map<std::string, b_element>;
@@ -38,7 +38,7 @@ void b_parsem(const char* buf, int len, int &cur, b_element& out)
 		if (buf[cur] == 'd')
 		{
 			///ÌøÈëÇ¶Ì×			
-			b_parsem(buf, len, cur, (*p)[key]);
+			b_parsed(buf, len, cur, (*p)[key]);
 			kv = 0;
 			key.clear();
 		}else if (buf[cur] == 'e')
@@ -97,7 +97,7 @@ void b_parsel(const char* buf, int len, int &cur, b_element& out)
 		if (buf[cur] == 'd')
 		{
 			///ÌøÈëÇ¶Ì×			
-			b_parsem(buf, len, cur, (*p).back());
+			b_parsed(buf, len, cur, (*p).back());
 		}
 		else if (buf[cur] == 'e')
 		{
@@ -138,7 +138,7 @@ void b_parse(const char* buf, int len, int &cur, b_element& out)
 	}
 	else if (buf[cur] == 'd')
 	{
-		b_parsem(buf, len, cur, out);
+		b_parsed(buf, len, cur, out);
 	}
 }
 
@@ -321,4 +321,49 @@ void b_package(b_element* e, std::string& o)
 	{
 		b_packagel(e, o);
 	}
+}
+
+void b_get(b_element* e, int cur, char** o, int& len)
+{
+	*o = 0;
+	if (2 == e->type)
+	{
+		std::list<b_element>* p;
+		memcpy(&p, &e->buf[0], sizeof(void*));
+
+		int mov = 0;
+		std::list<b_element>::iterator iter;
+		for (iter = p->begin(); iter != p->end(); iter++)
+		{
+			if (mov == cur)
+			{
+				*o = &iter->buf[0];
+				len = iter->buf.size();
+			}
+		}
+	}
+
+	return;
+}
+
+void b_get(b_element* e, int cur, b_element** o)
+{
+	*o = 0;
+	if (2 == e->type)
+	{
+		std::list<b_element>* p;
+		memcpy(&p, &e->buf[0], sizeof(void*));
+
+		int mov = 0;
+		std::list<b_element>::iterator iter;
+		for (iter = p->begin(); iter != p->end(); iter++)
+		{
+			if (mov++ == cur)
+			{
+				*o = &(*iter);
+			}
+		}
+	}
+
+	return;
 }
