@@ -1,2 +1,3 @@
 # bcode
-Kademlia;bcode;dht
+Kademlia bcode
+read and writ
