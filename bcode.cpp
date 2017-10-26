@@ -32,7 +32,7 @@ void b_parsed(const char* buf, int len, int &cur, b_element& out)
 
 	while (true)
 	{
-		if(cur++ == len)
+		if(cur++ >= len)
 			break;
 		
 		if (buf[cur] == 'd')
@@ -79,6 +79,9 @@ void b_parsed(const char* buf, int len, int &cur, b_element& out)
 			int begin = cur + 1, nlen = 0;
 			while (true)
 			{
+				if (begin + nlen >= len)
+					return;
+
 				if (buf[begin + ++nlen] == 'e')
 				{
 					(*p)[key].type = 3;
@@ -111,7 +114,7 @@ void b_parsel(const char* buf, int len, int &cur, b_element& out)
 	std::string slen;
 	while (true)
 	{
-		if (cur++ == len)
+		if (cur++ >= len)
 			break;
 
 		if (buf[cur] == 'd')
@@ -150,6 +153,9 @@ void b_parsel(const char* buf, int len, int &cur, b_element& out)
 			int begin = cur + 1, nlen = 0;
 			while (true)
 			{
+				if (begin + nlen >= len)
+					return;
+
 				if (buf[begin + ++nlen] == 'e')
 				{
 					///²åÈë¿ÕÖµ

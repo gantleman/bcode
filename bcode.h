@@ -22,5 +22,5 @@ void b_add(b_element* e, const char* key, b_element** o);
 int b_add(b_element* e, const char* key, char* i, int len);
 void b_del(b_element* e, const char* key);
 void b_package(b_element* e, std::string& o);
-void b_get(b_element* e, const char* key, char** o, int& len);
-void b_get(b_element* e, const char* key, b_element** o);
+void b_get(b_element* e, int cur, char** o, int& len);
+void b_get(b_element* e, int cur, b_element** o);
