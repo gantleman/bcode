@@ -119,7 +119,7 @@ void b_parsel(const char* buf, int len, int &cur, b_element& out)
 
 		if (buf[cur] == 'd')
 		{
-			///ÌøÈëÇ¶Ì×			
+			///ÌøÈëÇ¶Ì×
 			b_parsed(buf, len, cur, (*p).back());
 		}
 		else if (buf[cur] == 'e')
@@ -141,7 +141,8 @@ void b_parsel(const char* buf, int len, int &cur, b_element& out)
 			///²åÈë¿ÕÖµ
 			b_element t;
 			(*p).push_back(t);
-				
+			
+			(*p).back().iter = --(*p).end();
 			(*p).back().buf.resize(nlen);
 			memcpy(&(*p).back().buf[0], (buf + cur), nlen);
 
@@ -162,6 +163,7 @@ void b_parsel(const char* buf, int len, int &cur, b_element& out)
 					b_element t;
 					(*p).push_back(t);
 
+					(*p).back().iter = --(*p).end();
 					(*p).back().type = 3;
 					(*p).back().buf.resize(nlen);
 					memcpy(&(*p).back().buf[0], (buf + begin), nlen);
@@ -269,7 +271,7 @@ int b_add(b_element* e, const char* key, char* i, int len)
 	return 0;
 }
 
-void b_del(b_element* e, const char* key)
+void b_deld(b_element* e, const char* key)
 {
 	if (1 == e->type)
 	{
@@ -281,6 +283,18 @@ void b_del(b_element* e, const char* key)
 		{
 			p->erase(iter);
 		}
+	}
+}
+
+void b_dell(b_element* e, b_element* i)
+{
+	if (2 == e->type)
+	{
+		std::list<b_element>* p;
+		memcpy(&p, &e->buf[0], sizeof(void*));
+		std::list<b_element>::iterator iter = i->iter;
+
+		p->erase(iter);
 	}
 }
 
@@ -430,3 +444,20 @@ void b_get(b_element* e, int cur, b_element** o)
 
 	return;
 }
+
+void b_next(b_element* e, b_element** o)
+{
+	*o = 0;
+	if (2 == e->type)
+	{
+		std::list<b_element>* p;
+		memcpy(&p, &e->buf[0], sizeof(void*));
+		std::list<b_element>::iterator iter = e->iter;
+
+		if (++iter != p->end())
+		{
+			*o = &(*iter);
+		}
+	}
+}
+
