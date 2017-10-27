@@ -210,9 +210,10 @@ void b_find(b_element* e, const char* key, b_element** o)
 }
 
 
-void b_find(b_element* e, const char* key, char** o, int& len)
+void b_find(b_element* e, const char* key, unsigned char** o, int& len)
 {
 	*o = 0;
+	len = 0;
 	if (1 == e->type)
 	{
 		std::map<std::string, b_element>* p;
@@ -221,7 +222,7 @@ void b_find(b_element* e, const char* key, char** o, int& len)
 		std::map<std::string, b_element>::iterator iter = p->find(key);
 		if (iter != p->end())
 		{
-			*o = &iter->second.buf[0];
+			*o = (unsigned char*)&iter->second.buf[0];
 			len = iter->second.buf.size();
 		}
 	}
@@ -252,7 +253,7 @@ void b_add(b_element* e, const char* key, b_element** o)
 	return;
 }
 
-int b_add(b_element* e, const char* key, char* i, int len)
+int b_add(b_element* e, const char* key, unsigned char* i, int len)
 {
 	if (1 == e->type)
 	{
@@ -403,6 +404,7 @@ void b_package(b_element* e, std::string& o)
 void b_get(b_element* e, int cur, char** o, int& len)
 {
 	*o = 0;
+	len = 0;
 	if (2 == e->type)
 	{
 		std::list<b_element>* p;
