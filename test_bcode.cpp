@@ -13,7 +13,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	b_element out;
 	b_parse(bstr, strlen(bstr), cur, out);
 
-	char* o;
+	unsigned char* o;
 	int olen;
 	b_find(&out, "t", &o, olen);
 
