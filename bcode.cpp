@@ -414,10 +414,11 @@ void b_get(b_element* e, int cur, char** o, int& len)
 		std::list<b_element>::iterator iter;
 		for (iter = p->begin(); iter != p->end(); iter++)
 		{
-			if (mov == cur)
+			if (mov++ == cur)
 			{
 				*o = &iter->buf[0];
 				len = iter->buf.size();
+				return;
 			}
 		}
 	}
@@ -440,6 +441,7 @@ void b_get(b_element* e, int cur, b_element** o)
 			if (mov++ == cur)
 			{
 				*o = &(*iter);
+				return;
 			}
 		}
 	}
