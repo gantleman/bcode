@@ -100,7 +100,6 @@ void b_parsel(const char* buf, int len, int &cur, b_element& out)
 	while (true){
 		if (cur++ >= len)
 			break;
-
 		if (buf[cur] == 'd'){
 			///ÌøÈëÇ¶Ì×
 			b_parsed(buf, len, cur, (*p).back());
@@ -200,7 +199,7 @@ void b_find(b_element* e, const char* key, unsigned char** o, int& len)
 	return;
 }
 
-void b_add(b_element* e, const char* key, b_element** o)
+void b_insertd(b_element* e, const char* key, b_element** o)
 {
 	*o = 0;
 	if (1 == e->type){
@@ -217,11 +216,10 @@ void b_add(b_element* e, const char* key, b_element** o)
 			memcpy(&(*o)->buf[0], &np, sizeof(void*));
 		}
 	}
-
 	return;
 }
 
-int b_add(b_element* e, const char* key, unsigned char* i, int len)
+int b_insert(b_element* e, const char* key, unsigned char* i, int len)
 {
 	if (1 == e->type){
 		std::map<std::string, b_element>* p;
@@ -233,9 +231,39 @@ int b_add(b_element* e, const char* key, unsigned char* i, int len)
 			memcpy(&(*p)[key].buf[0], i, len);
 			return 1;
 		}
-	}
+	}else if (2 == e->type){
+		std::list<b_element>* p;
+		memcpy(&p, &e->buf[0], sizeof(void*));
 
+		b_element t;
+		(*p).push_back(t);
+
+		(*p).back().iter = --(*p).end();
+		(*p).back().buf.resize(len);
+		memcpy(&(*p).back().buf[0], i, len);
+		return 1;
+	}
 	return 0;
+}
+
+void b_insertl(b_element* e, const char* key, b_element** o)
+{
+	*o = 0;
+	if (1 == e->type){
+		std::map<std::string, b_element>* p;
+		memcpy(&p, &e->buf[0], sizeof(void*));
+
+		std::map<std::string, b_element>::iterator iter = p->find(key);
+		if (iter == p->end()){
+			(*p)[key].type = 1;
+			*o = &(*p)[key];
+
+			std::list<b_element>* np = new std::list<b_element>;
+			(*o)->buf.resize(sizeof(void*));
+			memcpy(&(*o)->buf[0], &np, sizeof(void*));
+		}
+	}
+	return;
 }
 
 void b_deld(b_element* e, const char* key)
@@ -394,15 +422,16 @@ void b_get(b_element* e, int cur, b_element** o)
 
 void b_next(b_element* e, b_element** o)
 {
-	*o = 0;
 	if (2 == e->type){
 		std::list<b_element>* p;
 		memcpy(&p, &e->buf[0], sizeof(void*));
-		std::list<b_element>::iterator iter = e->iter;
+		std::list<b_element>::iterator iter = (*o)->iter;
 
 		if (++iter != p->end()){
 			*o = &(*iter);
+			return;
 		}
 	}
+	*o = 0;
 }
 
