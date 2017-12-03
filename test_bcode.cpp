@@ -14,7 +14,9 @@ test_package()
 	b_insert(&in, "y", (unsigned char*)"q", 1);
 	b_insertd(&in, "a", &ia);
 	b_insert(ia, "r", (unsigned char*)"q", 1);
+	b_insert(ia, "g", (unsigned char*)"", 0);
 	b_insertd(ia, "d", &d);
+
 	for (int i = 0; i < 5; i++)
 	{
 		std::stringstream key, value;
